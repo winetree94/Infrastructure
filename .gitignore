@@ -2,5 +2,5 @@ venv
 .venv
 .vscode
 .vagrant
-inventory.yml
+cluster.key
 playbook/debug.yml
