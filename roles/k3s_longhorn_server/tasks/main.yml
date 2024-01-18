@@ -1,0 +1,20 @@
+---
+- name: Install Longhorn Server dependencies
+  ansible.builtin.apt:
+    name:
+      - nfs-common
+      - open-iscsi
+      - util-linux
+      - jq
+    update_cache: true
+    state: present
+
+- name: Install Longhorn
+  command: >-
+    kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/v1.5.3/deploy/longhorn.yaml
+
+- name: Create script from Jinja2 template
+  ansible.builtin.template:
+    src: auth.sh.j2
+    dest: ~/auth.sh
+  mode: '0755'

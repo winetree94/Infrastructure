@@ -13,9 +13,11 @@
   become: true
   roles:
     - role: k3s_server
+    - role: k3s_longhorn_server
 
 - name: Setup K3S agent
   hosts: agent
   become: true
   roles:
     - role: k3s_agent
+    - role: k3s_longhorn_agent

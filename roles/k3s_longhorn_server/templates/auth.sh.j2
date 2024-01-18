@@ -1,0 +1,5 @@
+#!/bin/bash
+
+USER={{ longhorn_username }}
+PASSWORD={{ longhorn_userpwd }}
+echo "${USER}:$(openssl passwd -stdin -apr1 <<< ${PASSWORD})" >> auth
