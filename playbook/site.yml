@@ -17,7 +17,7 @@
     - role: rancher
     # - role: metallb
     # - role: nginx
-    # - role: k3s_longhorn_server
+    - role: k3s_longhorn_server
 
 - name: Setup K3S agent
   hosts: agent
