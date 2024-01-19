@@ -1,0 +1,20 @@
+- name: Add MetalLB Repository
+  kubernetes.core.helm_repository:
+    name: stable
+    force_update: true
+    repo_url: "https://kubernetes-charts.storage.googleapis.com"
+
+- name: Install MetalLB
+  kubernetes.core.helm:
+    name: metallb
+    chart_ref: stable/metallb
+    # create_namespace: true
+    namespace: kube-system
+    update_repo_cache: true
+    set_values:
+      - value: configInline.address-pools[0].name=default
+        value_type: string
+      - value: configInline.address-pools[0].protocol=layer2
+        value_type: string
+      - value: configInline.address-pools[0].addresses[0]=192.168.11.50-192.168.11.60
+        value_type: string

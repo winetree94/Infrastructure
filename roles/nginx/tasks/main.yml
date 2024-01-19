@@ -1,0 +1,22 @@
+- name: Add Nginx Repository
+  kubernetes.core.helm_repository:
+    name: stable
+    force_update: true
+    repo_url: "https://kubernetes-charts.storage.googleapis.com"
+
+- name: Install Nginx
+  kubernetes.core.helm:
+    name: nginx-ingress
+    chart_ref: stable/nginx-ingress
+    create_namespace: true
+    namespace: ingress-controller
+    update_repo_cache: true
+    set_values:
+      - value: controller.image.repository=quay.io/kubernetes-ingress-controller/nginx-ingress-controller-amd64
+        value_type: string
+      - value: controller.image.tag=0.25.1
+        value_type: string
+      - value: controller.image.runAsUser=33
+        value_type: string
+      - value: defaultBackend.enabled=false
+        value_type: string

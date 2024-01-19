@@ -13,7 +13,11 @@
   become: true
   roles:
     - role: k3s_server
-    - role: k3s_longhorn_server
+    - role: helm
+    - role: rancher
+    # - role: metallb
+    # - role: nginx
+    # - role: k3s_longhorn_server
 
 - name: Setup K3S agent
   hosts: agent

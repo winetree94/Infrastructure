@@ -1,0 +1,28 @@
+---
+- name: Add Rancher Repository
+  kubernetes.core.helm_repository:
+    name: rancher-stable
+    repo_url: "https://releases.rancher.com/server-charts/stable"
+
+- name: CRDs
+  get_url:
+    url: https://github.com/cert-manager/cert-manager/releases/download/v1.13.3/cert-manager.crds.yaml
+    dest: /root/cert-manager.crds.yaml
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Apply CRDs
+  ansible.builtin.command:
+    cmd: kubectl apply -f /root/cert-manager.crds.yaml
+
+- name: Install Rancher
+  kubernetes.core.helm:
+    name: rancher
+    chart_ref: rancher-stable/rancher
+    create_namespace: true
+    namespace: cattle-system
+    update_repo_cache: true
+    values:
+      hostname: rancher.k3s.winetree94.click
+      bootstrapPassword: admin
