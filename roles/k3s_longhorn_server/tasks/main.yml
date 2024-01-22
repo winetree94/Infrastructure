@@ -38,5 +38,5 @@
 - name: Longhorn Ingress
   when: longhorn_ingress_config
   ansible.builtin.command:
-    cmd: kubectl -n longhorn-system apply -f /root/longhorn-ingress.yml
+    cmd: kubectl apply -f /root/longhorn-ingress.yml
   # changed_when: true

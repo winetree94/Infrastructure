@@ -1,20 +1,37 @@
+---
 - name: Add MetalLB Repository
   kubernetes.core.helm_repository:
-    name: stable
+    name: metallb
     force_update: true
-    repo_url: "https://kubernetes-charts.storage.googleapis.com"
+    repo_url: "https://metallb.github.io/metallb"
 
 - name: Install MetalLB
   kubernetes.core.helm:
     name: metallb
-    chart_ref: stable/metallb
-    # create_namespace: true
-    namespace: kube-system
+    chart_ref: metallb/metallb
+    create_namespace: true
+    namespace: metallb-system
     update_repo_cache: true
-    set_values:
-      - value: configInline.address-pools[0].name=default
-        value_type: string
-      - value: configInline.address-pools[0].protocol=layer2
-        value_type: string
-      - value: configInline.address-pools[0].addresses[0]=192.168.11.50-192.168.11.60
-        value_type: string
+    wait: true
+
+- name: Enable MetalLB
+  ansible.builtin.shell: |
+    cat << 'EOF' | kubectl apply -f -
+    apiVersion: metallb.io/v1beta1
+    kind: IPAddressPool
+    metadata:
+      name: default-pool
+      namespace: metallb-system
+    spec:
+      addresses:
+      - 192.168.0.200-192.168.0.250
+    ---
+    apiVersion: metallb.io/v1beta1
+    kind: L2Advertisement
+    metadata:
+      name: default
+      namespace: metallb-system
+    spec:
+      ipAddressPools:
+      - default-pool
+    EOF
