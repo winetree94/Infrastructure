@@ -21,22 +21,17 @@
     create_namespace: true
     namespace: longhorn-system
     update_repo_cache: true
+    wait: true
 
-# - name: Install Longhorn
-#   command: >-
-#     kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/v1.5.3/deploy/longhorn.yaml
-
-- name: Copy longhorn ingress
+- name: Copy Longhorn Service Config
   ansible.builtin.template:
-    src: longhorn-ingress.yml.j2
-    dest: /root/longhorn-ingress.yml
+    src: longhorn.yml.j2
+    dest: /root/longhorn.yml
     owner: root
     group: root
     mode: 0644
   register: longhorn_ingress_config
 
-- name: Longhorn Ingress
-  when: longhorn_ingress_config
+- name: Apply Longhorn Service
   ansible.builtin.command:
-    cmd: kubectl apply -f /root/longhorn-ingress.yml
-  # changed_when: true
+    cmd: kubectl apply -f /root/longhorn.yml

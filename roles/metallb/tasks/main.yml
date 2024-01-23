@@ -14,24 +14,18 @@
     update_repo_cache: true
     wait: true
 
-- name: Enable MetalLB
+- name: Copy MetalLB Service Config
+  ansible.builtin.template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: root
+    group: root
+    mode: 0644
+  loop:
+    - { src: 'metallb-ip-address-pool.yml.j2', dest: '/root/metallb-ip-address-pool.yml' }
+    - { src: 'metallb-l2.yml.j2', dest: '/root/metallb-l2.yml' }
+
+- name: Apply MetalLB Service
   ansible.builtin.shell: |
-    cat << 'EOF' | kubectl apply -f -
-    apiVersion: metallb.io/v1beta1
-    kind: IPAddressPool
-    metadata:
-      name: default-pool
-      namespace: metallb-system
-    spec:
-      addresses:
-      - 192.168.0.200-192.168.0.250
-    ---
-    apiVersion: metallb.io/v1beta1
-    kind: L2Advertisement
-    metadata:
-      name: default
-      namespace: metallb-system
-    spec:
-      ipAddressPools:
-      - default-pool
-    EOF
+    kubectl apply -f /root/metallb-ip-address-pool.yml
+    kubectl apply -f /root/metallb-l2.yml 
