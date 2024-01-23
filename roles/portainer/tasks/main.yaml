@@ -1,0 +1,30 @@
+---
+- name: Add Portainer repository
+  kubernetes.core.helm_repository:
+    name: portainer
+    repo_url: "https://portainer.github.io/k8s/"
+
+- name: Install Portainer
+  kubernetes.core.helm:
+    name: portainer
+    chart_ref: portainer/portainer
+    create_namespace: true
+    namespace: portainer
+    update_repo_cache: true
+    wait: true
+    set_values:
+      - value: service.type=LoadBalancer
+      - value: tls.force=true
+
+# - name: Copy Longhorn Service Config
+#   ansible.builtin.template:
+#     src: longhorn.yml.j2
+#     dest: /root/longhorn.yml
+#     owner: root
+#     group: root
+#     mode: 0644
+#   register: longhorn_ingress_config
+
+# - name: Apply Longhorn Service
+#   ansible.builtin.command:
+#     cmd: kubectl apply -f /root/longhorn.yml
